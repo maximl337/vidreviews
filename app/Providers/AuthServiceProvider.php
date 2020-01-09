@@ -25,6 +25,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('update-review', function ($user, $review) {
+            return $user->id == $review->user_id;
+        });
     }
 }

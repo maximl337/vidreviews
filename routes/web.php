@@ -18,3 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+
+Route::post('review/approve', 'HomeController@approveReview')->name('approve');
+
+Route::post('review/unapprove', 'HomeController@disapproveReview')->name('disapprove');

@@ -16,6 +16,11 @@ class Review extends Model
         'seen_at'
     ];
 
+    protected $dates = [
+        'approved_at',
+        'seen_at',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

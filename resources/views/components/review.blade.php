@@ -1,16 +1,19 @@
 <div class="card review-card">
     <div class="card-body">
-        <div class="text-right">
-            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-            </button>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
-            </div>
+        <div class="text-right mb-2">
+            @if(empty($review['approved_at']))
+            <form method="POST" action="{{ route('approve') }}">
+            @csrf
+                <input type="hidden" name="review_id" value="{{ $review['id'] }}" />
+                <input type="submit" class="btn btn-sm btn-primary" value="Approve">
+            </form>
+            @else
+            <form method="POST" action="{{ route('disapprove') }}">
+            @csrf
+                <input type="hidden" name="review_id" value="{{ $review['id'] }}" />
+                <input type="submit" class="btn btn-sm btn-primary" value="Disapprove">
+            </form>
+            @endif
         </div>
         <div class="card-img-top" alt="Card image cap">
             <img src="{{ $review['video_url'] }}" />

@@ -57,4 +57,27 @@ class HomeController extends Controller
         ]);
         return redirect('/')->with('status', 'Review was approved!');
     }
+
+    /**
+     * Approve a review
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function disapproveReview(Request $request)
+    {
+        $this->validate($request, [
+            'review_id' => 'required|exists:reviews,id'
+        ]);
+
+        $review = Review::findOrFail($request->get('review_id'));
+
+        if (Gate::denies('update-review', $review)) {
+            return redirect('/')->withErrors(['Authorization', 'You are not authorized for that action.']);
+        }
+
+        $review->update([
+            'approved_at' => NULL
+        ]);
+        return redirect('/')->with('status', 'Review was disapproved!');
+    }
 }

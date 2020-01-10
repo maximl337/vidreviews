@@ -83,7 +83,7 @@ class ReviewTest extends TestCase
         ]);
     }
 
-    public function testShouldNotAllow()
+    public function testShouldNotAllowEmptyReviewIdWhenApproving()
     {
         $user = factory(\App\User::class)->create();
 
@@ -134,6 +134,96 @@ class ReviewTest extends TestCase
         $this->assertDatabaseMissing('reviews', [
             'id' => $review->id,
             'approved_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    public function testDisapproveReview()
+    {
+        $user = factory(\App\User::class)->create();
+
+        $reviewers = factory(\App\User::class, 2)->create();
+
+        foreach($reviewers as $reviewer) {
+            factory(\App\Review::class)->create([
+                'user_id' => $user->id,
+                'reviewer_id' => $reviewer->id,
+                'approved_at' => now(),
+            ]);
+        }
+
+        $review = \App\Review::where('user_id', $user->id)->with('reviewer')->first();
+
+        $response = $this->actingAs($user)->post('/review/disapprove', [
+            'review_id' => $review->id
+        ]);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/')
+            ->assertSessionHas('status', 'Review was disapproved!');
+
+        $this->assertDatabaseHas('reviews', [
+            'id' => $review->id,
+            'approved_at' => NULL
+        ]);
+    }
+
+    public function testShouldNotAllowEmptyReviewIdWhenDisapproving()
+    {
+        $user = factory(\App\User::class)->create();
+
+        $reviewers = factory(\App\User::class, 2)->create();
+        $now = now();
+
+        foreach($reviewers as $reviewer) {
+
+            factory(\App\Review::class)->create([
+                'user_id' => $user->id,
+                'reviewer_id' => $reviewer->id,
+                'approved_at' => $now
+            ]);
+        }
+
+        $review = \App\Review::where('user_id', $user->id)->with('reviewer')->first();
+
+        $response = $this->actingAs($user)->post('/review/disapprove', []);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/')
+            ->assertSessionHasErrors(['review_id']);
+
+        $this->assertDatabaseHas('reviews', [
+            'id' => $review->id,
+            'approved_at' => $now
+        ]);
+    }
+
+    public function testAnotherUserCannotDisapproveReview()
+    {
+        $user = factory(\App\User::class)->create();
+
+        $unauthorizedUser = factory(\App\User::class)->create();
+
+        $reviewers = factory(\App\User::class, 2)->create();
+
+        $now = now();
+
+        foreach($reviewers as $reviewer) {
+            factory(\App\Review::class)->create([
+                'user_id' => $user->id,
+                'reviewer_id' => $reviewer->id,
+                'approved_at' => $now
+            ]);
+        }
+
+        $review = \App\Review::where('user_id', $user->id)->with('reviewer')->first();
+
+        $response = $this->actingAs($unauthorizedUser)->post('/review/disapprove', []);
+
+        $response->assertStatus(302);
+
+        $this->assertDatabaseMissing('reviews', [
+            'id' => $review->id,
+            'approved_at' => NULL
         ]);
     }
 }

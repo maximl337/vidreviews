@@ -16,7 +16,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['indexPublic']]);
     }
 
     /**
@@ -26,13 +26,26 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $reviews = $request->user()
+        $user = $request->user();
+        $reviews = $user
                     ->reviews()
                     ->with('reviewer')
                     ->get()
                     ->toArray();
 
-        return view('home', compact('reviews'));
+        return view('home', compact('reviews', 'user'));
+    }
+
+    public function indexPublic(User $user)
+    {
+        $reviews = $user
+                    ->reviews()
+                    ->whereNotNull('approved_at')
+                    ->with('reviewer')
+                    ->get()
+                    ->toArray();
+
+        return view('home', compact('reviews', 'user'));
     }
 
     /**

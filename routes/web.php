@@ -14,4 +14,6 @@ Route::get('invite', 'InviteController@invite')->name('invite');
 
 Route::post('invite', 'InviteController@sendInvite')->name('send-invite');
 
+Route::get('invite/{email}/{token}', 'InviteController@acceptInvite')->name('accept-invite');
+
 

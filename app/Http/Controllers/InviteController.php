@@ -48,4 +48,9 @@ class InviteController extends Controller
         Mail::to($invite->invitee_email)->send(new SendInviteMail($invite, $user));
         return redirect('/')->with(['status' => 'Invite sent!']);
     }
+
+    public function acceptInvite($token, $email)
+    {
+
+    }
 }

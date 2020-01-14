@@ -36,6 +36,12 @@ class SendInviteMail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.invite');
+        $url = route('accept-invite', [
+            'token' => $this->invite->token,
+            'email' => $this->invite->invitee_email
+        ]);
+        return $this->view('emails.invite')
+                    ->subject($this->user->name . " invited you to leave a review")
+                    ->with(['url' => $url]);
     }
 }

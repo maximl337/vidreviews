@@ -20,6 +20,7 @@ class CreateInvitesTable extends Migration
             $table->string('token', 12);
             $table->text('message')->nullable();
             $table->dateTime('accepted_at')->nullable();
+            $table->dateTime('submitted_at')->nullable();
             $table->timestamps();
         });
 

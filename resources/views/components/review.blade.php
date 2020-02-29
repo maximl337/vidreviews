@@ -18,7 +18,7 @@
             @endif
         </div>
         <div class="card-img-top" alt="Card image cap">
-            <img src="{{ $review['video_url'] }}" />
+            <ziggeoplayer id="ziggeo-player" ziggeo-video="{{ $review['token'] }}"></ziggeoplayer>
         </div>
         <div class="media mt-4">
             <img class="mr-3" src="{{ $review['reviewer']['avatar'] }}" alt="Generic placeholder image" width="50">

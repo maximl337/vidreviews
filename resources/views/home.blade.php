@@ -1,19 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-@component('components._status')
-@endcomponent
 <section class="jumbotron text-center">
 <div class="container">
     <h1 class="jumbotron-heading">Testimonials</h1>
-    <div class="media mt-4 w-25 mx-auto" style="width: 20% !important;">
-        <img class="mr-3" src="{{ $user['avatar'] }}" alt="Generic placeholder image" width="50">
-        <div class="media-body">
-            <p class="mt-0">{{ $user['name'] }}</p>
+    <div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="media mt-4 pl-5 ml-5">
+            <img class="mr-2" src="{{ $user['avatar'] }}" alt="Generic placeholder image" width="50">
+            <div class="media-body text-left">
+                <p class="mt-0">{{ $user['name'] }}</p>
+            </div>
         </div>
+    </div>
     </div>
 </div>
 </section>
+@component('components._status')
+@endcomponent
 <div class="container">
     <div class="row">
         <div class="col-md-12 mb-5 text-center">

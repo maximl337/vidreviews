@@ -109,4 +109,52 @@ class InviteTest extends TestCase
         $this->seeEmailWasSent()
             ->seeEmailTo($invitee);
     }
+
+    public function testShouldAcceptInvite()
+    {
+        $user = factory(\App\User::class)->create();
+        $invitee_email = 'foo@bar.com';
+        $invitee = factory(\App\User::class)->create(['email' => $invitee_email]);
+
+        $token = Str::random(12);
+
+        $invite = Invite::create([
+            'user_id' => $user->id,
+            'invitee_email' => $invitee_email,
+            'token' => $token
+        ]);
+
+        $response = $this->actingAs($invitee)
+                        ->get("invite/$invitee_email/$token");
+
+        $response->assertViewIs('accept-invite');
+
+        $this->assertDatabaseMissing('invites', [
+            'id' => $invite->id,
+            'accepted_at' => NULL
+        ]);
+
+    }
+
+    public function testShouldRequireAuthenticationToAcceptInvite()
+    {
+        $user = factory(\App\User::class)->create();
+        $invitee_email = 'foo@bar.com';
+        $token = Str::random(12);
+
+        $invite = Invite::create([
+            'user_id' => $user->id,
+            'invitee_email' => $invitee_email,
+            'token' => $token
+        ]);
+
+        $response = $this->get("invite/$invitee_email/$token");
+
+        $response->assertRedirect('/login');
+
+        $this->assertDatabaseHas('invites', [
+            'id' => $invite->id,
+            'accepted_at' => NULL
+        ]);
+    }
 }

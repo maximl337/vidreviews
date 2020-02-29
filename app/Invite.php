@@ -11,11 +11,13 @@ class Invite extends Model
         'invitee_email',
         'token',
         'message',
-        'accepted_at'
+        'accepted_at',
+        'submitted_at'
     ];
 
     protected $dates = [
-        'accepted_at'
+        'accepted_at',
+        'submitted_at'
     ];
 
     public function user()

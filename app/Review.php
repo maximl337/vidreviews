@@ -9,8 +9,6 @@ class Review extends Model
     protected $fillable = [
         'user_id',
         'reviewer_id',
-        'video_url',
-        'thumbnail',
         'token',
         'approved_at',
         'seen_at'
@@ -20,11 +18,6 @@ class Review extends Model
         'approved_at',
         'seen_at',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function reviewer()
     {
